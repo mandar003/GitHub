@@ -1,0 +1,112 @@
+﻿@model IEnumerable<GitHubViewerApp.Models.GitRepos>
+
+
+@if (Model == null)
+{
+    <div>Not able to find Record </div>
+}
+else
+{
+    using (Ajax.BeginForm(new AjaxOptions
+    {
+        InsertionMode = System.Web.Mvc.Ajax.InsertionMode.Replace,
+        UpdateTargetId = "gridContent",
+        HttpMethod = "POST",
+        LoadingElementId = "loading"
+    }))
+    {
+
+
+        ViewBag.Title = "grid";
+
+        WebGrid grid = new WebGrid(Model, canSort: false,rowsPerPage:(int)@ViewBag.PageCount, ajaxUpdateContainerId: "gridContent");
+    @grid.GetHtml(
+    tableStyle: "gridtable", // applying style on grid
+    fillEmptyRows: true,
+    headerStyle: "header", //applying style.
+    footerStyle: "grid-footer", //applying style.
+    mode: WebGridPagerModes.All, //paging to grid
+  
+    columns: new[]  
+    {
+
+        grid.Column("name","Name",format: @<text>@Html.ActionLink(linkText: (string)@item.name, 
+actionName: "collaborators", 
+routeValues: new { reponame = item.name,username = ViewBag.User },htmlAttributes: new{onclick="return showLoginPopup('"+ @item.name+"','"+ViewBag.User+"')" }
+ )
+    </text>), 
+        grid.Column("description"),
+
+        grid.Column("watchers"), 
+
+   })
+   
+}
+    <div id="result" style="display: none;">
+
+        @using (Html.BeginForm("collaborators", "GitHome", FormMethod.Post))
+        {
+            <table>
+                <tr>
+                    <td>
+                        @Html.Display("UserName", "UserName")
+                    </td>
+                    <td>
+                        @Html.TextBox("authoName")
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        @Html.Display("Password", "Password")
+                    </td>
+                    <td>
+                        @Html.Password("authoPassword")
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+
+                        <input type="submit" value="Authenticate" onclick="return ValidateForm();" />
+                    </td>
+                </tr>
+            </table>
+            @Html.Hidden("username")
+            @Html.Hidden("reponame")
+        }
+
+    </div>
+}
+
+
+
+<script type="text/javascript">
+
+    function showLoginPopup(reponame, username) {
+        $("#username").val(username);
+        $("#reponame").val(reponame);
+        $("#result").dialog("open");
+        //  window.location = "GitHome/collaborators/?username=" + username + "&reponame=" + reponame + "";
+        return false;
+    }
+    $(function () {
+        $("#result").dialog({
+            autoOpen: false,
+            title: 'Login',
+            width: 500,
+            height: 'auto',
+            modal: true
+        });
+    });
+
+    function ValidateForm() {
+        if ($("#authoName").val() == "") {
+            alert("please Enter UserName");
+            return false;
+        }
+        if ($("#authoPassword").val() == "") {
+            alert("please Enter Password");
+            return false;
+        }
+
+    }
+</script>

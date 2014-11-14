@@ -1,0 +1,34 @@
+﻿@model IEnumerable<GitHubViewerApp.Models.GitUser>
+
+@{
+    ViewBag.Title = "collaborators";
+}
+
+<h2>List of Collabrators</h2>
+
+@if (ViewBag.Status == "")
+{
+
+    foreach (var item in Model)
+    {
+  
+
+    <div>
+        <b>@Html.DisplayName(item.login) </b>
+    </div>
+    <div>
+        <img src ="@item.avatar_url" style="border:1px solid black;" />
+
+    </div>
+
+
+         
+    }
+
+
+
+}
+else
+{
+    <div style="color:red"><b> Not Authorized to view this Collabrator. </b></div>
+}

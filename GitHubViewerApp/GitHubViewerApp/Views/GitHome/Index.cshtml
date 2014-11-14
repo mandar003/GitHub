@@ -1,0 +1,33 @@
+﻿@model GitHubViewerApp.Models.ViewModelSearch
+
+@{
+    ViewBag.Title = "GitHubViewer Home";
+}
+
+<h2>search user...</h2>
+
+<div>
+    @using(Ajax.BeginForm(new AjaxOptions{
+        InsertionMode= System.Web.Mvc.Ajax.InsertionMode.Replace,
+        UpdateTargetId="gridContent",
+        HttpMethod = "POST",
+        LoadingElementId = "loading"
+    }))
+    {
+        @Html.ValidationSummary(true)
+          
+                    @Html.EditorFor(model => model.search)
+            @Html.ValidationMessageFor(model => model.search)
+        <input type ="submit" value ="search" id="submitsearch" />
+    }
+</div>
+
+
+<div id ="gridContent">
+    
+
+</div>
+    
+<div id = "loading" >
+    <img src="~/Content/themes/base/images/animated-overlay.gif" />
+</div>
